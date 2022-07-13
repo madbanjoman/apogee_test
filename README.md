@@ -11,38 +11,10 @@ A Python Flask application that says "Hello, World!"
 
 ## Docker Exercise
 
-* Provide a `Dockerfile` to build and run the application.
-* Modify the application to replace _Hello, World!_ with an optional string set
-  using an environment variable and defaulting to _Hello, World!_
-* Provide a `docker-compose.yml` file to run the application and set a custom
-  string using an environment variable.
+I have created with docker-compose three instances of the Python Flask application behind a nginx simple round robin load balancer reverse proxy. Two out of the three have custom welcome messages, but web_02 uses the default. So if you hit the site repeatedly, you should see the two custom messages and the default message.
 
-This should result in the ability to navigate to <http://localhost:5000/> and see
-the custom greeting.
+I have created a simple perl script (scripts/data_collect.pl) to collect the data for the Flask app and create the respective files in the files directory. It then checks the SHA256 of the files against the id parameter to confirm a match.
 
-## Scripting Exercise
+For the reverse proxy configuration I have a nginx.conf file in the nginx directory. This is the one I am using to configure the simple round robin load balancer reverse proxy that I am running for this application. I know that it is mainly setup as a load balancer. I do have it set to port 5001 for my machine. I actually had MS Edge helper running on that port so I needed to redirect it to start the service.
 
-Provide a script or code in a language or tool of your choice that will parse
-the data returned from <http://localhost:5000/data> and create a file in a
-`files/` sub-directory named `<id>.txt` with the _name_ as the contents of the
-file.
-E.g. `files/3fc4ccfe745870e2c0d99f71f30ff0656c8dedd41cc1d7d3d376b0dbe685e2f3.txt`
-
-Note: The SHA256 sum of each file's contents (`<name>`) should match the `<id>`.
-
-## Reverse Proxy Configuration
-
-Provide a minimal reverse proxy configuration for the application. This can be anything -
-an Nginx, Apache, or Traefik config, a Terraform, CloudFormation, or CDK
-configuration for AWS Load Balancing, etc.
-
-It does not have to be implemented and functional in this exercise.
-
-Idea: Try the [nginx](https://hub.docker.com/_/nginx) or
-[traefik](https://hub.docker.com/_/traefik) Docker image ran from the same
-Docker Compose file as the application.
-
-## Submittal
-
-Push your solution to your own repository on GitHub, GitLab, another public
-repository, or provide an archive file (.zip) to the team.
+I have caching at 3 seconds so to see the RR effect of the messages you have to let a few seconds pass.
