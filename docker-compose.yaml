@@ -60,7 +60,7 @@ services:
        dockernet:
          ipv4_address: 172.20.0.2
      ports:
-       - 5001:5000
+       - 5000:5000
        - 443:443
 
 networks:
