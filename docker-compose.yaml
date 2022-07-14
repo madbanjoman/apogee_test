@@ -1,36 +1,46 @@
-version: "3"
 services:
    
    web_01:
      image: web_service
+     build: 
+       context: ./web_service 
      container_name: web_01
      environment: 
        CUST_MESSAGE: "This is web_01, Hello!"
-     build: 
-       context: ./web_service 
+     restart: always
+     networks:
+       dockernet:
+         ipv4_address: 172.20.0.3
      expose:
        - "5000"
    
    web_02:
      image: web_service
+     build: 
+       context: ./web_service 
      container_name: web_02
-
+     restart: always
      # The below is commented out so the web_02 server when hit will display the default welcome message
      #environment: 
      #  CUST_MESSAGE: "This is web_02, Hello!"
 
-     build: 
-       context: ./web_service 
+     networks:
+       dockernet:
+         ipv4_address: 172.20.0.4
      expose:
        - "5000"
    
    web_03:
      image: web_service
-     container_name: web_03
-     environment: 
-       CUST_MESSAGE: "This is web_03, Hello!"
      build: 
        context: ./web_service 
+     container_name: web_03
+     restart: always
+     environment: 
+       CUST_MESSAGE: "This is web_03, Hello!"
+     networks:
+       dockernet:
+         ipv4_address: 172.20.0.5
      expose:
       - "5000"
 
@@ -43,7 +53,19 @@ services:
        - web_03
      volumes:
        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-       - ./nginx/cache/:/etc/nginx/cache
+       - ./nginx/cache/:/etc/nginx/cache/
        - ./nginx/error_logs/:/etc/nginx/error_logs/
+       - ./nginx/certs/:/etc/nginx/certs/
+     networks:
+       dockernet:
+         ipv4_address: 172.20.0.2
      ports:
        - 5001:5000
+       - 443:443
+
+networks:
+  dockernet:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.0/16       
